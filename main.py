@@ -37,7 +37,7 @@ polygons = [
         [530, 370]
     ], np.int32)
 ]
-video_info = sv.VideoInfo.from_video_path("dash.mp4")
+video_info = sv.VideoInfo.from_video_path("vid1.mp4")
 
 zones = [
     sv.PolygonZone(
@@ -88,7 +88,7 @@ def play_video(video_path):
         ret, frame = cap.read()
         if not ret:
             break
-        results = model(frame, imgsz=1280)[0]
+        results = model(frame, imgsz=700)[0]
         detections = sv.Detections.from_ultralytics(results)
         detections = detections[np.isin(detections.class_id, selected_classes)]
         detections = detections[detections.confidence > 0.5]
@@ -133,6 +133,6 @@ def play_video(video_path):
     cv.destroyAllWindows()
 
 
-play_video("dash.mp4")
+play_video("vid1.mp4")
 
 # play_video(0)
