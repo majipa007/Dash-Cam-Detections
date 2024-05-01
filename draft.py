@@ -1,3 +1,4 @@
+# github test 2 using pycharm
 import cv2 as cv
 from ultralytics import YOLO
 import time
