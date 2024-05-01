@@ -74,8 +74,13 @@ class Dash:
         detections = detections[np.isin(detections.class_id, self.selected_classes)]
         detections = detections[detections.confidence > 0.5]
 
-        for zone, zone_annotator, box_annotator in zip(self.zones, self.zone_annotators, self.box_annotators):
-            mask = zone.trigger(detections=detections)
+        level = 0
+        for i in range(len(self.polygons)):
+            close = False
+            mod = False
+            far = False
+            level = 0
+            mask = self.zones[i].trigger(detections=detections)
             detections_filtered = detections[mask]
             labels = []
             for detection in detections_filtered:
@@ -83,6 +88,18 @@ class Dash:
                 class_name = self.model.names[class_id]
                 label = f"{class_name} {confidence:0.2f}"
                 labels.append(label)
-            frame = box_annotator.annotate(scene=frame, detections=detections_filtered, labels=labels)
-            frame = zone_annotator.annotate(scene=frame)
-        return frame
+            if len(labels):
+                if i == 0:
+                    close = True
+                    level = 0
+                if i == 1 and close is False:
+                    mod = True
+                    level = 1
+                if i == 2 and close is False and mod is False:
+                    far = True
+                    level = 2
+            
+            frame = self.box_annotators[i].annotate(scene=frame, detections=detections_filtered, labels=labels)
+            frame = self.zone_annotators[i].annotate(scene=frame)
+
+        return frame, level
