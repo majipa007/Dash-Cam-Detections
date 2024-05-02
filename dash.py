@@ -75,11 +75,10 @@ class Dash:
         detections = detections[detections.confidence > 0.5]
 
         level = 0
+        close = False
+        mod = False
+        far = False
         for i in range(len(self.polygons)):
-            close = False
-            mod = False
-            far = False
-            level = 0
             mask = self.zones[i].trigger(detections=detections)
             detections_filtered = detections[mask]
             labels = []
@@ -91,15 +90,12 @@ class Dash:
             if len(labels):
                 if i == 0:
                     close = True
-                    level = 0
-                if i == 1 and close is False:
+                if i == 1:
                     mod = True
-                    level = 1
-                if i == 2 and close is False and mod is False:
+                if i == 2:
                     far = True
-                    level = 2
-            
+
             frame = self.box_annotators[i].annotate(scene=frame, detections=detections_filtered, labels=labels)
             frame = self.zone_annotators[i].annotate(scene=frame)
 
-        return frame, level
+        return frame, close, mod, far

@@ -18,17 +18,20 @@ def play_video(video_path):
         if not ret:
             break
 
-        frame, level = dash.dash_detect(frame)  # dash_detect method from Dash class
+        frame, close, mod, far = dash.dash_detect(frame)  # dash_detect method from Dash class
 
-        if level == 2:
-            cv.putText(frame, "far", (10, 170), cv.FONT_HERSHEY_PLAIN, 3,
-                       (0, 0, 0), 3)
-        elif level == 1:
-            cv.putText(frame, "moderate", (10, 170), cv.FONT_HERSHEY_PLAIN, 3,
-                       (0, 0, 0), 3)
-        elif level == 0:
+        if close:
             cv.putText(frame, "close", (10, 170), cv.FONT_HERSHEY_PLAIN, 3,
                        (0, 0, 0), 3)
+
+        elif mod:
+            cv.putText(frame, "moderate", (10, 170), cv.FONT_HERSHEY_PLAIN, 3,
+                       (0, 0, 0), 3)
+
+        elif far:
+            cv.putText(frame, "far", (10, 170), cv.FONT_HERSHEY_PLAIN, 3,
+                       (0, 0, 0), 3)
+
         fps = 1 / (cTime - pTime)
         pTime = cTime
         cv.putText(frame, str(int(fps)), (10, 70), cv.FONT_HERSHEY_PLAIN, 3,
