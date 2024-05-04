@@ -2,49 +2,63 @@
 import cv2 as cv
 import time
 from dash import Dash
+from drowsy import Drowsy
 
 
-def play_video(video_path):
+def play_video(video_path, cam_path):
     dash = Dash(video_path)  # calling class Dash from dash.py
-    cap = cv.VideoCapture(video_path)
+    drowsy_ = Drowsy()
+    cap1 = cv.VideoCapture(video_path)
+    cap2 = cv.VideoCapture(cam_path)
+
     pTime = 0
-    if not cap.isOpened():
-        print("Error: Unable to open the video file.")
+    if not cap1.isOpened():
+        print("Error: Unable to open the dash cam.")
+        return
+    if not cap2.isOpened():
+        print("Error: Unable to open the front cam.")
         return
 
     while True:
         cTime = time.time()
-        ret, frame = cap.read()
-        if not ret:
+        ret1, frame1 = cap1.read()
+        ret2, frame2 = cap2.read()
+
+        if (not ret1) or (not ret2):
             break
 
-        frame, close, mod, far = dash.dash_detect(frame)  # dash_detect method from Dash class
+        status, frame2 = drowsy_.dd(frame2)
 
-        if close:
-            cv.putText(frame, "close", (10, 170), cv.FONT_HERSHEY_PLAIN, 3,
-                       (0, 0, 0), 3)
+        if status == "SLEEPING !!!":
+            frame1, close, mod, far = dash.dash_detect(frame1)  # dash_detect method from Dash class
 
-        elif mod:
-            cv.putText(frame, "moderate", (10, 170), cv.FONT_HERSHEY_PLAIN, 3,
-                       (0, 0, 0), 3)
+            if close:
+                cv.putText(frame1, "close", (10, 170), cv.FONT_HERSHEY_PLAIN, 3,
+                           (0, 0, 0), 3)
 
-        elif far:
-            cv.putText(frame, "far", (10, 170), cv.FONT_HERSHEY_PLAIN, 3,
-                       (0, 0, 0), 3)
+            elif mod:
+                cv.putText(frame1, "moderate", (10, 170), cv.FONT_HERSHEY_PLAIN, 3,
+                           (0, 0, 0), 3)
+
+            elif far:
+                cv.putText(frame1, "far", (10, 170), cv.FONT_HERSHEY_PLAIN, 3,
+                           (0, 0, 0), 3)
 
         fps = 1 / (cTime - pTime)
         pTime = cTime
-        cv.putText(frame, str(int(fps)), (10, 70), cv.FONT_HERSHEY_PLAIN, 3,
+        cv.putText(frame1, str(int(fps)), (10, 70), cv.FONT_HERSHEY_PLAIN, 3,
                    (255, 0, 255), 3)
 
-        resized_frame = cv.resize(frame, (1920, 1080))
-        cv.imshow('win', resized_frame)
+        resized_frame = cv.resize(frame1, (1920, 1080))
+        cv.imshow('dash_road', resized_frame)
+        cv.imshow('dash_face', frame2)
 
         if cv.waitKey(1) & 0xFF == ord('q'):
             break
 
-    cap.release()
+    cap1.release()
+    cap2.release()
     cv.destroyAllWindows()
 
 
-play_video("vid1.mp4")
+play_video("vid1.mp4", 0)
