@@ -33,21 +33,27 @@ def play_video(video_path, cam_path):
             frame1, close, mod, far = dash.dash_detect(frame1)  # dash_detect method from Dash class
 
             if close:
-                cv.putText(frame1, "close", (10, 170), cv.FONT_HERSHEY_PLAIN, 3,
-                           (0, 0, 0), 3)
+                cv.putText(frame1, "nearest car:close", (3000, 170), cv.FONT_HERSHEY_PLAIN, 5,
+                           (255, 0, 255), 5)
+                cv.putText(frame1, "brake:100%", (3000, 250), cv.FONT_HERSHEY_PLAIN, 5,
+                           (255, 0, 255), 5)
 
             elif mod:
-                cv.putText(frame1, "moderate", (10, 170), cv.FONT_HERSHEY_PLAIN, 3,
-                           (0, 0, 0), 3)
+                cv.putText(frame1, "nearest car:moderate", (3000, 170), cv.FONT_HERSHEY_PLAIN, 5,
+                           (255, 0, 255), 5)
+                cv.putText(frame1, "brake:70%", (3000, 250), cv.FONT_HERSHEY_PLAIN, 5,
+                           (255, 0, 255), 5)
 
             elif far:
-                cv.putText(frame1, "far", (10, 170), cv.FONT_HERSHEY_PLAIN, 3,
-                           (0, 0, 0), 3)
+                cv.putText(frame1, "nearest car:far", (3000, 170), cv.FONT_HERSHEY_PLAIN, 5,
+                           (255, 0, 255), 5)
+                cv.putText(frame1, "brake:50%", (3000, 250), cv.FONT_HERSHEY_PLAIN, 5,
+                           (255, 0, 255), 5)
 
         fps = 1 / (cTime - pTime)
         pTime = cTime
-        cv.putText(frame1, str(int(fps)), (10, 70), cv.FONT_HERSHEY_PLAIN, 3,
-                   (255, 0, 255), 3)
+        cv.putText(frame1, str(int(fps)), (10, 170), cv.FONT_HERSHEY_PLAIN, 5,
+                   (255, 0, 255), 5)
 
         resized_frame = cv.resize(frame1, (1920, 1080))
         cv.imshow('dash_road', resized_frame)

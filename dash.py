@@ -10,10 +10,10 @@ class Dash:
     def __init__(self, path):
         self.path = path
         self.video_info = sv.VideoInfo.from_video_path(self.path)
-        self.model = YOLO("yolov8s.pt")  # loading the model
+        self.model = YOLO("yolov8n.pt")  # loading the model
         self.selected_classes = [0, 1, 2, 3, 5, 7]  # classes to be predicted
         # 0: person, 1:bicycle , 2:car, 3:motorcycle, 5:bus, 7:truck
-        x = [sv.Color(r=255, g=0, b=0), sv.Color(r=255, g=255, b=0), sv.Color(r=0, g=255, b=0)]
+        x = [sv.Color(r=255, g=0, b=0), sv.Color(r=255, g=255, b=0), sv.Color(r=0, g=255, b=0), sv.Color(r=0, g=0, b=225), sv.Color(r=0, g=0, b=225)]
         scale = 3  # scale for matching the video resolution
         self.polygons = [
             scale * np.array([
@@ -33,6 +33,18 @@ class Dash:
                 [630, 330],
                 [670, 370],
                 [530, 370]
+            ], np.int32),
+            scale * np.array([
+                [670, 373],
+                [905, 373],
+                [1200, 550],
+                [905, 550]
+            ], np.int32),
+            scale * np.array([
+                [295, 373],
+                [530, 373],
+                [295, 550],
+                [0, 550]
             ], np.int32)
         ]
         self.zones = [
