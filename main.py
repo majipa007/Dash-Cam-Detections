@@ -3,6 +3,7 @@ import cv2 as cv
 import time
 from dash import Dash
 from drowsy import Drowsy
+import notify
 
 
 def play_video(video_path, cam_path):
@@ -49,6 +50,9 @@ def play_video(video_path, cam_path):
                            (255, 0, 255), 5)
                 cv.putText(frame1, "brake:50%", (3000, 250), cv.FONT_HERSHEY_PLAIN, 5,
                            (255, 0, 255), 5)
+                
+            # Send notification.
+            notify.make_request_with_retry() 
 
         fps = 1 / (cTime - pTime)
         pTime = cTime
